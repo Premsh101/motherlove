@@ -1,0 +1,29 @@
+name: Deploy to KVM
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to KVM Server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd /path/to/your/project
+            # Pull latest changes from main
+            git pull origin main
+            
+            # Rebuild and restart the Docker containers in the background
+            docker compose down
+            docker compose build --no-cache
+            docker compose up -d
+            
+            # Prune old dangling images to save disk space on KVM
+            docker image prune -f

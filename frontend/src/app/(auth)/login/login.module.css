@@ -1,0 +1,280 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  background: #fdf2f8; /* Soft pink base */
+  position: relative;
+  overflow: hidden;
+}
+
+.bgDecor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  animation: float 12s ease-in-out infinite;
+}
+
+.orb1 {
+  width: 600px;
+  height: 600px;
+  background: rgba(255, 107, 157, 0.2);
+  top: -10%;
+  right: -5%;
+}
+
+.orb2 {
+  width: 500px;
+  height: 500px;
+  background: rgba(155, 107, 255, 0.15);
+  bottom: -10%;
+  left: -5%;
+  animation-delay: 4s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-30px) scale(1.05); }
+}
+
+.splitContainer {
+  display: flex;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  z-index: 1;
+}
+
+/* Left Side: Graphic */
+.graphicSide {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  position: relative;
+}
+
+.graphicContent {
+  text-align: center;
+  max-width: 500px;
+}
+
+.cartoonImage {
+  width: 100%;
+  max-width: 450px;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 24px;
+  border-radius: 24px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+  background: rgba(255,255,255,0.4);
+  backdrop-filter: blur(10px);
+}
+
+.graphicTitle {
+  font-family: var(--font-heading);
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--gray-900);
+  margin-bottom: 12px;
+}
+
+.graphicSub {
+  font-size: 16px;
+  color: var(--gray-600);
+  line-height: 1.6;
+}
+
+/* Right Side: Form */
+.formSide {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.formContainer {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 32px;
+  padding: 48px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.logoWrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.title {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--gray-900);
+  margin-bottom: 8px;
+}
+
+.accent {
+  color: var(--pink-500);
+}
+
+.subtitle {
+  font-size: 15px;
+  color: var(--gray-500);
+  margin-bottom: 32px;
+}
+
+.errorBanner {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  margin-bottom: 24px;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: left;
+}
+
+.inputGroup label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray-700);
+  margin-bottom: 8px;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 16px;
+  font-size: 18px;
+}
+
+.inputAction {
+  position: absolute;
+  right: 16px;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.inputAction:hover {
+  opacity: 1;
+}
+
+.inputWrapper input {
+  width: 100%;
+  padding: 14px 16px 14px 44px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  font-size: 15px;
+  transition: all 0.2s;
+}
+
+.inputWrapper input:focus {
+  outline: none;
+  border-color: var(--pink-400);
+  background: white;
+  box-shadow: 0 0 0 4px rgba(255, 107, 157, 0.1);
+}
+
+.loginBtn {
+  margin-top: 12px;
+  width: 100%;
+  padding: 16px;
+  background: var(--gradient-pink);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 8px 20px rgba(255, 107, 157, 0.3);
+}
+
+.loginBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(255, 107, 157, 0.4);
+}
+
+.demoRoles {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.demoRoles p {
+  font-size: 13px;
+  color: var(--gray-500);
+  margin-bottom: 12px;
+}
+
+.roleBadges {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.roleBadges span {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-heading);
+}
+
+.badgeAdmin { background: rgba(255, 157, 33, 0.1); color: #e68000; }
+.badgeDoctor { background: rgba(155, 107, 255, 0.1); color: var(--lavender-600); }
+.badgePatient { background: rgba(45, 212, 149, 0.1); color: #1fb179; }
+
+.autoDetect {
+  font-size: 11px !important;
+  color: var(--gray-400) !important;
+}
+
+.backLink {
+  display: inline-block;
+  margin-top: 20px;
+  font-size: 14px;
+  color: var(--gray-500);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.backLink:hover {
+  color: var(--gray-800);
+}
+
+@media (max-width: 992px) {
+  .graphicSide {
+    display: none;
+  }
+}
