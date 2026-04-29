@@ -12,6 +12,7 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - JWT_SECRET=${JWT_SECRET}
       - PORT=5030
+      - FRONTEND_URL=${FRONTEND_URL}
     networks:
       - mothernest-net
 
