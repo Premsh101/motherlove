@@ -1,4 +1,5 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5030/api';
+const BASE_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5030').replace(/\/+$/, '');
+const API_URL = BASE_URL.endsWith('/api') ? BASE_URL : `${BASE_URL}/api`;
 
 function getToken(): string | null {
   if (typeof window === 'undefined') return null;
