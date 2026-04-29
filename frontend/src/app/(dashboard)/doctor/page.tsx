@@ -99,7 +99,7 @@ export default function DoctorDashboard() {
       formData.append('patientId', patientDetail.patient.id);
       formData.append('type', 'other');
       const token = localStorage.getItem('mothernest_token');
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5030/api';
       await fetch(`${API_URL}/documents/upload`, {
         method: 'POST', body: formData,
         headers: { Authorization: `Bearer ${token}` },
