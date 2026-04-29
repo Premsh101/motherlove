@@ -14,7 +14,6 @@ import graphRoutes from './routes/graphs';
 import documentRoutes from './routes/documents';
 
 const app = express();
-const PORT = process.env.PORT || 5030;
 
 // --- Middleware ---
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
