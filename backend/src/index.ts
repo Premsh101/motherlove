@@ -35,7 +35,7 @@ const corsOptions: cors.CorsOptions = {
 };
 
 // Handle preflight OPTIONS requests explicitly before any other middleware
-app.options('*', cors(corsOptions));
+app.options('/{*path}', cors(corsOptions));
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
