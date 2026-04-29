@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Users, Calendar, BarChart3, LogOut, Upload, ArrowLeft,
-  Plus, Search, Eye, X, Loader2, AlertTriangle, FileText, ChevronRight
+  Plus, Search, Eye, X, Loader2, AlertTriangle, FileText, ChevronRight, Menu
 } from 'lucide-react';
 import Image from 'next/image';
 import { apiFetch, getUser, logout } from '@/lib/api';
@@ -31,6 +31,7 @@ export default function DoctorDashboard() {
   // Modals
   const [showAddPatient, setShowAddPatient] = useState(false);
   const [showVisitForm, setShowVisitForm] = useState<string | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   
   // Detail State
   const [patientDetail, setPatientDetail] = useState<any>(null);
@@ -170,14 +171,23 @@ export default function DoctorDashboard() {
         <div className={`${styles.orb} ${styles.orb4}`} />
       </div>
 
-      <aside className={styles.sidebar}>
+      {/* Mobile Header */}
+      <div className={styles.mobileHeader}>
+        <span className={styles.mobileLogo}>Mother<span className={styles.accent}>Nest</span></span>
+        <button className={styles.burgerBtn} onClick={() => setSidebarOpen(true)} aria-label="Open menu"><Menu size={22} /></button>
+      </div>
+
+      {/* Sidebar Overlay */}
+      <div className={`${styles.sidebarOverlay} ${sidebarOpen ? styles.sidebarOverlayVisible : ''}`} onClick={() => setSidebarOpen(false)} />
+
+      <aside className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarMobileOpen : ''}`}>
         <div className={styles.sidebarLogo}>
           <Image src="/logo.png" alt="Logo" width={38} height={38} style={{ borderRadius: 10 }} />
           <span className={styles.logoText}>Mother<span className={styles.accent}>Nest</span></span>
         </div>
         <nav className={styles.nav}>
           {navItems.map(item => (
-            <button key={item.id} className={`${styles.navLink} ${(activeTab === item.id || (activeTab === 'patient_detail' && item.id === 'patients')) ? styles.navActive : ''}`} onClick={() => setActiveTab(item.id as any)}>
+            <button key={item.id} className={`${styles.navLink} ${(activeTab === item.id || (activeTab === 'patient_detail' && item.id === 'patients')) ? styles.navActive : ''}`} onClick={() => { setActiveTab(item.id as any); setSidebarOpen(false); }}>
               <div className={styles.navIcon}><item.icon size={18}/></div><span>{item.label}</span>
             </button>
           ))}
@@ -382,7 +392,7 @@ export default function DoctorDashboard() {
               <div className={styles.emptyState}>No visits recorded yet to show graphs.</div>
             )}
 
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 24, marginTop: 32 }}>
+            <div className={styles.detailSplitGrid}>
               {/* Visit History Table */}
               <div className={styles.section}>
                 <h3 className={styles.sectionTitle}>📅 Visit History</h3>
