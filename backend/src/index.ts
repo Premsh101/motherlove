@@ -21,17 +21,22 @@ const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3030')
   .split(',')
   .map((o) => o.trim());
 
-app.use(cors({
+const corsOptions: cors.CorsOptions = {
   origin: (origin, callback) => {
     // Allow requests with no origin (e.g. mobile apps, curl)
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error(`CORS: origin '${origin}' not allowed`));
+      console.warn(`CORS: rejected origin '${origin}'. Allowed: ${allowedOrigins.join(', ')}`);
+      callback(null, false);
     }
   },
   credentials: true,
-}));
+};
+
+// Handle preflight OPTIONS requests explicitly before any other middleware
+app.options('*', cors(corsOptions));
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -68,6 +73,7 @@ const PORT = Number(process.env.PORT) || 5030;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🏥 MotherNest API running on port ${PORT}`);
   console.log(`📊 Health check: /api/health`);
+  console.log(`🌐 Allowed CORS origins: ${allowedOrigins.join(', ')}`);
 });
 
 export default app;
