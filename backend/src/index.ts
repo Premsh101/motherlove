@@ -53,9 +53,9 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 });
 
 // --- Start ---
-app.listen(PORT, () => {
-  console.log(`🏥 MotherNest API running on http://localhost:${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🏥 MotherNest API running on port ${PORT}`);
+  console.log(`📊 Health check: /api/health`);
 });
 
 export default app;
