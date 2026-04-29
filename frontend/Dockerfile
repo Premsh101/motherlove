@@ -1,14 +1,14 @@
-FROM node:18-alpine AS deps
+FROM node:20-alpine AS deps
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 # Disable telemetry during build
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # Note: In production CI/CD, NEXT_PUBLIC_API_URL should be passed as an ARG or ENV during build time.
 # For Docker Compose, we pass it via build args or ENV.
@@ -17,10 +17,10 @@ ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
 RUN npm run build
 
-FROM node:18-alpine AS runner
+FROM node:20-alpine AS runner
 WORKDIR /app
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
@@ -38,7 +38,7 @@ USER nextjs
 
 EXPOSE 3030
 
-ENV PORT 3030
-ENV HOSTNAME "0.0.0.0"
+ENV PORT=3030
+ENV HOSTNAME="0.0.0.0"
 
 CMD ["node", "server.js"]
