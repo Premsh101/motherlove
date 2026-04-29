@@ -53,6 +53,8 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 });
 
 // --- Start ---
+const PORT = Number(process.env.PORT) || 5030;
+
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🏥 MotherNest API running on port ${PORT}`);
   console.log(`📊 Health check: /api/health`);
