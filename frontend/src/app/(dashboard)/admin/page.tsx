@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Activity, Stethoscope, Users, LogOut,
-  Plus, Search, Edit2, Power, X, Loader2, AlertTriangle,
+  Plus, Search, Edit2, Power, X, Loader2, AlertTriangle, Menu,
 } from 'lucide-react';
 import Image from 'next/image';
 import { apiFetch, getUser, logout } from '@/lib/api';
@@ -31,6 +31,7 @@ export default function AdminDashboard() {
   const [formData, setFormData] = useState({ name: '', phone: '', password: '', specialization: '' });
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState('');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => { setUser(getUser()); loadData(); }, []);
 
@@ -75,20 +76,29 @@ export default function AdminDashboard() {
         <div className={`${styles.orb} ${styles.orb4}`} />
       </div>
 
+      {/* Mobile Header */}
+      <div className={styles.mobileHeader}>
+        <span className={styles.mobileLogo}>Mother<span className={styles.accent}>Nest</span></span>
+        <button className={styles.burgerBtn} onClick={() => setSidebarOpen(true)} aria-label="Open menu"><Menu size={22} /></button>
+      </div>
+
+      {/* Sidebar Overlay */}
+      <div className={`${styles.sidebarOverlay} ${sidebarOpen ? styles.sidebarOverlayVisible : ''}`} onClick={() => setSidebarOpen(false)} />
+
       {/* Glass Sidebar */}
-      <aside className={styles.sidebar}>
+      <aside className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarMobileOpen : ''}`}>
         <div className={styles.sidebarLogo}>
           <Image src="/logo.png" alt="Logo" width={38} height={38} style={{ borderRadius: 10 }} />
           <span className={styles.logoText}>Mother<span className={styles.accent}>Nest</span></span>
         </div>
         <nav className={styles.nav}>
-          <a href="/admin" className={`${styles.navLink} ${styles.navActive}`}>
+          <a href="/admin" className={`${styles.navLink} ${styles.navActive}`} onClick={() => setSidebarOpen(false)}>
             <div className={styles.navIcon}><Activity size={18} /></div><span>Dashboard</span>
           </a>
-          <a href="/admin" className={styles.navLink}>
+          <a href="/admin" className={styles.navLink} onClick={() => setSidebarOpen(false)}>
             <div className={styles.navIcon}><Stethoscope size={18} /></div><span>Doctors</span>
           </a>
-          <a href="/admin" className={styles.navLink}>
+          <a href="/admin" className={styles.navLink} onClick={() => setSidebarOpen(false)}>
             <div className={styles.navIcon}><Users size={18} /></div><span>Patients</span>
           </a>
         </nav>

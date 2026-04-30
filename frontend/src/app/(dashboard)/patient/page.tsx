@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Activity, Calendar, TrendingUp, FileText, LogOut, Shield, Upload, X, Heart, Thermometer, Droplets, BookOpen, Settings, ChevronDown, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Activity, Calendar, TrendingUp, FileText, LogOut, Shield, Upload, X, Heart, Thermometer, Droplets, BookOpen, Settings, ChevronDown, ChevronRight, ChevronLeft, Menu } from 'lucide-react';
 import Image from 'next/image';
 import { apiFetch, getUser, logout } from '@/lib/api';
 import { WeightChart, BPChart, FHRChart, HemoglobinChart, GlucoseChart, FundalHeightChart, FetalMovementChart, RiskDonutChart, AFIChart, TemperatureChart, PulseChart } from '@/components/charts/ChartComponents';
@@ -39,6 +39,9 @@ export default function PatientDashboard() {
   
   // Knowledge Bank
   const [selectedWeek, setSelectedWeek] = useState<number | null>(null);
+
+  // Mobile sidebar
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => { setUser(getUser()); }, []);
 
@@ -130,14 +133,23 @@ export default function PatientDashboard() {
         <div className={`${styles.orb} ${styles.orb3}`} />
       </div>
 
-      <aside className={styles.sidebar}>
+      {/* Mobile Header */}
+      <div className={styles.mobileHeader}>
+        <span className={styles.mobileLogo}>Mother<span className={styles.accent}>Nest</span></span>
+        <button className={styles.burgerBtn} onClick={() => setSidebarOpen(true)} aria-label="Open menu"><Menu size={22} /></button>
+      </div>
+
+      {/* Sidebar Overlay */}
+      <div className={`${styles.sidebarOverlay} ${sidebarOpen ? styles.sidebarOverlayVisible : ''}`} onClick={() => setSidebarOpen(false)} />
+
+      <aside className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarMobileOpen : ''}`}>
         <div className={styles.sidebarLogo}>
           <Image src="/logo.png" alt="Logo" width={38} height={38} style={{ borderRadius: 10 }} />
           <span className={styles.logoText}>Mother<span className={styles.accent}>Nest</span></span>
         </div>
         <nav className={styles.nav}>
           {navItems.map(item => (
-            <button key={item.tab} className={`${styles.navLink} ${activeTab === item.tab ? styles.navActive : ''}`} onClick={() => setActiveTab(item.tab)}>
+            <button key={item.tab} className={`${styles.navLink} ${activeTab === item.tab ? styles.navActive : ''}`} onClick={() => { setActiveTab(item.tab); setSidebarOpen(false); }}>
               <div className={styles.navIcon}><item.icon size={18} /></div><span>{item.label}</span>
             </button>
           ))}
@@ -145,7 +157,7 @@ export default function PatientDashboard() {
         <div className={styles.sidebarUser}>
           <div className={styles.userAvatar}>🤰</div>
           <div style={{ flex: 1 }}><div className={styles.userName}>{user?.name || 'Mom'}</div><div className={styles.userRole}>Patient</div></div>
-          <button className={styles.actionBtn} onClick={() => setShowSettings(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}><Settings size={16} color="var(--gray-500)" /></button>
+          <button className={styles.actionBtn} onClick={() => { setShowSettings(true); setSidebarOpen(false); }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}><Settings size={16} color="var(--gray-500)" /></button>
         </div>
         <button className={styles.logoutBtn} onClick={logout}><LogOut size={16} /> Logout</button>
       </aside>
