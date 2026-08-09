@@ -15,6 +15,8 @@ services:
       - FRONTEND_URL=${FRONTEND_URL}
       # Create/alter tables from src/models/schema.ts on every container start
       - AUTO_MIGRATE=${AUTO_MIGRATE:-true}
+      # Create the sample accounts if they are missing (never overwrites data)
+      - AUTO_SEED=${AUTO_SEED:-true}
       - MIGRATE_STRICT=${MIGRATE_STRICT:-false}
     networks:
       - mothernest-net
