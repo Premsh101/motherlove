@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Activity, Calendar, TrendingUp, FileText, LogOut, Shield, Upload, X, Heart, Thermometer, Droplets, BookOpen, Settings, ChevronDown, ChevronRight, ChevronLeft, Menu } from 'lucide-react';
 import Image from 'next/image';
-import { apiFetch, getUser, logout } from '@/lib/api';
+import { apiFetch, getUser, logout, uploadDocument } from '@/lib/api';
 import { WeightChart, BPChart, FHRChart, HemoglobinChart, GlucoseChart, FundalHeightChart, FetalMovementChart, RiskDonutChart, AFIChart, TemperatureChart, PulseChart } from '@/components/charts/ChartComponents';
 import { getKnowledgeForWeek } from '@/lib/knowledge';
 import styles from './patient.module.css';
@@ -87,18 +87,12 @@ export default function PatientDashboard() {
     if (!file || !user) return;
     setUploading(true);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('patientId', user.id);
-      formData.append('type', 'other');
-      const token = localStorage.getItem('mothernest_token');
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5030/api';
-      await fetch(`${API_URL}/documents/upload`, {
-        method: 'POST', body: formData,
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await uploadDocument(file, user.id);
       loadData();
-    } catch {} finally { setUploading(false); }
+    } catch (e) {
+      console.error(e);
+      alert('Upload failed');
+    } finally { setUploading(false); }
   };
 
   const handleSaveProfile = async (e: React.FormEvent) => {

@@ -7,7 +7,7 @@ import {
   Plus, Search, Eye, X, Loader2, AlertTriangle, FileText, ChevronRight, Menu
 } from 'lucide-react';
 import Image from 'next/image';
-import { apiFetch, getUser, logout } from '@/lib/api';
+import { apiFetch, getUser, logout, uploadDocument } from '@/lib/api';
 import { WeightChart, BPChart, FHRChart, HemoglobinChart, GlucoseChart, FundalHeightChart, FetalMovementChart, RiskDonutChart, AFIChart, TemperatureChart, PulseChart } from '@/components/charts/ChartComponents';
 import styles from './doctor.module.css';
 
@@ -95,16 +95,7 @@ export default function DoctorDashboard() {
     if (!file || !patientDetail) return;
     setUploading(true);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('patientId', patientDetail.patient.id);
-      formData.append('type', 'other');
-      const token = localStorage.getItem('mothernest_token');
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5030/api';
-      await fetch(`${API_URL}/documents/upload`, {
-        method: 'POST', body: formData,
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await uploadDocument(file, patientDetail.patient.id);
       // Reload docs
       const docs = await apiFetch(`/documents/${patientDetail.patient.id}`);
       setPatientDocs(docs.documents || []);

@@ -18,20 +18,26 @@ services:
       # Create the sample accounts if they are missing (never overwrites data)
       - AUTO_SEED=${AUTO_SEED:-true}
       - MIGRATE_STRICT=${MIGRATE_STRICT:-false}
+    volumes:
+      # Uploaded documents live on disk — without this they are lost on rebuild
+      - mothernest-uploads:/app/uploads
     networks:
       - mothernest-net
 
   frontend:
-    build: 
+    build:
       context: ./frontend
       args:
+        # The Next server proxies /api and /uploads to the backend over this
+        # network, so the backend does not need to be publicly reachable.
+        - BACKEND_INTERNAL_URL=${BACKEND_INTERNAL_URL:-http://backend:5030}
+        # Leave empty unless the browser should call the backend origin
+        # directly instead of going through the proxy above.
         - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
     container_name: mothernest-frontend
     restart: unless-stopped
     ports:
       - "3030:3030"
-    environment:
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
     networks:
       - mothernest-net
     depends_on:
@@ -40,3 +46,6 @@ services:
 networks:
   mothernest-net:
     driver: bridge
+
+volumes:
+  mothernest-uploads:
