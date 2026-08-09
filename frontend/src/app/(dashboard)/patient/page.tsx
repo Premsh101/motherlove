@@ -6,7 +6,7 @@ import { Activity, Calendar, TrendingUp, FileText, LogOut, Shield, Upload, X, He
 import Image from 'next/image';
 import { apiFetch, getUser, logout, uploadDocument } from '@/lib/api';
 import { WeightChart, BPChart, FHRChart, HemoglobinChart, GlucoseChart, FundalHeightChart, FetalMovementChart, RiskDonutChart, AFIChart, TemperatureChart, PulseChart } from '@/components/charts/ChartComponents';
-import { getKnowledgeForWeek } from '@/lib/knowledge';
+import { getKnowledgeForWeek, getWarningSigns, getTrimesterLabel, pregnancyKnowledgeBase, TOTAL_PREGNANCY_WEEKS } from '@/lib/knowledge';
 import styles from './patient.module.css';
 
 interface Overview {
@@ -450,12 +450,13 @@ export default function PatientDashboard() {
               <div className={styles.knowledgeSidebar}>
                 <h4 style={{ padding: '0 16px 12px', fontSize: 13, textTransform: 'uppercase', color: 'var(--gray-400)', letterSpacing: 0.5, borderBottom: '1px solid var(--gray-100)' }}>Pregnancy Weeks</h4>
                 <div className={styles.weeksList}>
-                  {Array.from({ length: 40 }, (_, i) => i + 1).map(wk => (
-                    <button 
-                      key={wk} 
+                  {Array.from({ length: TOTAL_PREGNANCY_WEEKS }, (_, i) => i + 1).map(wk => (
+                    <button
+                      key={wk}
                       className={`${styles.weekBtn} ${displayWeek === wk ? styles.weekBtnActive : ''} ${preg?.gestationalWeeks === wk ? styles.weekBtnCurrent : ''}`}
                       onClick={() => setSelectedWeek(wk)}
                     >
+                      <span className={styles.weekBtnEmoji}>{pregnancyKnowledgeBase[wk]?.sizeEmoji}</span>
                       Week {wk} {preg?.gestationalWeeks === wk && <span className={styles.currentBadge}>Current</span>}
                     </button>
                   ))}
@@ -469,26 +470,67 @@ export default function PatientDashboard() {
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
                       <button className={styles.actionBtn} onClick={() => setSelectedWeek(Math.max(1, displayWeek - 1))} disabled={displayWeek <= 1}><ChevronLeft size={20}/></button>
                       <div style={{ textAlign: 'center' }}>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--pink-500)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>Week {displayWeek}</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--pink-500)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>
+                          Week {displayWeek} · {getTrimesterLabel(knowledge.trimester)}
+                        </div>
                         <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: 24, margin: 0 }}>{knowledge.title}</h3>
                       </div>
-                      <button className={styles.actionBtn} onClick={() => setSelectedWeek(Math.min(40, displayWeek + 1))} disabled={displayWeek >= 40}><ChevronRight size={20}/></button>
+                      <button className={styles.actionBtn} onClick={() => setSelectedWeek(Math.min(TOTAL_PREGNANCY_WEEKS, displayWeek + 1))} disabled={displayWeek >= TOTAL_PREGNANCY_WEEKS}><ChevronRight size={20}/></button>
                     </div>
-                    
+
+                    {/* Size of the baby this week */}
+                    <div className={styles.sizeStrip}>
+                      <div className={styles.sizeEmoji}>{knowledge.sizeEmoji}</div>
+                      <div className={styles.sizeFacts}>
+                        <div className={styles.sizeFact}><span>Size of a</span><strong>{knowledge.size}</strong></div>
+                        <div className={styles.sizeFact}><span>Length</span><strong>{knowledge.length}</strong></div>
+                        <div className={styles.sizeFact}><span>Weight</span><strong>{knowledge.weight}</strong></div>
+                      </div>
+                    </div>
+
                     <div className={styles.knowledgeGrid}>
                       <div className={styles.knowledgeSection} style={{ background: 'rgba(255,107,157,0.05)', border: '1px solid rgba(255,107,157,0.1)' }}>
-                        <h4 style={{ color: 'var(--pink-600)' }}>👶 Baby's Development</h4>
+                        <h4 style={{ color: 'var(--pink-600)' }}>👶 Baby&apos;s Development</h4>
                         <p>{knowledge.baby}</p>
                       </div>
                       <div className={styles.knowledgeSection} style={{ background: 'rgba(155,107,255,0.05)', border: '1px solid rgba(155,107,255,0.1)' }}>
                         <h4 style={{ color: 'var(--lavender-600)' }}>👩 Your Body</h4>
                         <p>{knowledge.mom}</p>
                       </div>
-                      <div className={styles.knowledgeSection} style={{ background: 'rgba(45,212,149,0.05)', border: '1px solid rgba(45,212,149,0.1)', gridColumn: '1 / -1' }}>
+
+                      <div className={styles.knowledgeSection} style={{ background: 'rgba(255,167,38,0.06)', border: '1px solid rgba(255,167,38,0.14)' }}>
+                        <h4 style={{ color: '#c77700' }}>🌡️ Common This Week</h4>
+                        <ul className={styles.knowledgeList}>
+                          {knowledge.symptoms.map(s => <li key={s}>{s}</li>)}
+                        </ul>
+                      </div>
+                      <div className={styles.knowledgeSection} style={{ background: 'rgba(56,142,255,0.05)', border: '1px solid rgba(56,142,255,0.12)' }}>
+                        <h4 style={{ color: '#1668c9' }}>📋 To Do &amp; Appointments</h4>
+                        <ul className={styles.knowledgeList}>
+                          {knowledge.checklist.map(c => <li key={c}>{c}</li>)}
+                        </ul>
+                      </div>
+
+                      <div className={styles.knowledgeSection} style={{ background: 'rgba(45,212,149,0.05)', border: '1px solid rgba(45,212,149,0.1)' }}>
                         <h4 style={{ color: 'var(--mint-600)' }}>💡 Healthy Tip</h4>
                         <p>{knowledge.tip}</p>
                       </div>
+                      <div className={styles.knowledgeSection} style={{ background: 'rgba(45,212,149,0.05)', border: '1px solid rgba(45,212,149,0.1)' }}>
+                        <h4 style={{ color: 'var(--mint-600)' }}>🥗 Eat For This Week</h4>
+                        <p>{knowledge.nutrition}</p>
+                      </div>
+
+                      <div className={styles.knowledgeSection} style={{ background: 'rgba(255,77,79,0.05)', border: '1px solid rgba(255,77,79,0.15)', gridColumn: '1 / -1' }}>
+                        <h4 style={{ color: 'var(--danger)' }}>🚨 Call Your Doctor If You Notice</h4>
+                        <ul className={`${styles.knowledgeList} ${styles.warningList}`}>
+                          {getWarningSigns(displayWeek).map(w => <li key={w}>{w}</li>)}
+                        </ul>
+                      </div>
                     </div>
+
+                    <p className={styles.knowledgeDisclaimer}>
+                      General guidance for a typical pregnancy — every pregnancy differs. Always follow your own doctor&apos;s advice.
+                    </p>
                   </div>
                 ) : (
                   <div className={styles.emptyCard}><p>No information available for this week.</p></div>
