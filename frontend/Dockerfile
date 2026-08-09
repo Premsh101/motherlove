@@ -10,8 +10,14 @@ COPY . .
 # Disable telemetry during build
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Note: In production CI/CD, NEXT_PUBLIC_API_URL should be passed as an ARG or ENV during build time.
-# For Docker Compose, we pass it via build args or ENV.
+# Where the Next server forwards /api and /uploads. Next bakes rewrites into the
+# build output, so this has to be set at build time. The default matches the
+# backend service name on the Docker Compose network.
+ARG BACKEND_INTERNAL_URL=http://backend:5030
+ENV BACKEND_INTERNAL_URL=$BACKEND_INTERNAL_URL
+
+# Optional: only set this to make the browser call a backend origin directly
+# instead of going through the Next proxy above. Leave empty for same-origin.
 ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
