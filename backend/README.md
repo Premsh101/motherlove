@@ -26,7 +26,8 @@ is added with `ALTER TABLE ... ADD COLUMN`, not by recreating the table.
 | Variable | Default | Effect |
 | --- | --- | --- |
 | `AUTO_MIGRATE` | `true` | Set to `false` to skip the schema sync entirely |
-| `MIGRATE_STRICT` | `false` | Set to `true` to abort startup if the sync fails. By default a failed sync logs a warning and the API starts against the existing schema. |
+| `AUTO_SEED` | `true` | Set to `false` to skip the seed (see below) |
+| `MIGRATE_STRICT` | `false` | Set to `true` to abort startup if the sync or seed fails. By default a failure logs a warning and the API starts against the existing schema. |
 
 ### Running it manually
 
@@ -46,15 +47,40 @@ column, copy the data, then remove the old one) before shipping one.
 
 ## Seeding
 
-The database starts empty; there are no built-in accounts. To create the sample
-admin/doctor/patient users:
+The sample accounts and their visit histories are created **automatically on
+startup**, right after the schema sync. A fresh deploy therefore comes up with
+working logins and a populated demo dataset — nothing to run by hand.
+
+| Role | Phone | Password |
+| --- | --- | --- |
+| Admin | `9000000001` | `admin123` |
+| Doctor (Dr. Priya) | `9000000002` | `doctor123` |
+| Doctor (Dr. Neha) | `9000000003` | `doctor123` |
+| Patient (Aarohi, 28 wks) | `9000000010` | `patient123` |
+| Patient (Meera, 20 wks) | `9000000011` | `patient123` |
+| Patient (Sanya, 34 wks, high risk) | `9000000012` | `patient123` |
+
+**Change these passwords before the site handles anything real** — they are
+committed to this repository.
+
+The seed only ever adds what is missing; it never updates or deletes:
+
+- Accounts are matched on their (unique) phone number. An account that already
+  exists is left exactly as it is, so a password changed after the first deploy
+  survives every later deploy.
+- A patient's visit history is only created when that patient has **no** visits
+  at all. Once a doctor has entered a real visit, the seed leaves that patient
+  alone permanently.
+
+That makes it safe on every restart. Set `AUTO_SEED=false` to turn it off — for
+example once the demo accounts are no longer wanted in production. Deleting the
+sample accounts while `AUTO_SEED=true` just recreates them on the next deploy.
+
+To run it manually:
 
 ```bash
 npm run db:seed
 ```
-
-Credentials it creates are printed at the end of the run. Phone numbers are
-unique, so the seed only works on a database that has not been seeded yet.
 
 ## Local development
 
