@@ -2,10 +2,11 @@
 node_modules/
 jspm_packages/
 
-# Next.js build output
+# Build output
 .next/
 out/
 build/
+dist/
 
 # Next.js / Vercel
 .vercel

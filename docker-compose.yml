@@ -13,6 +13,9 @@ services:
       - JWT_SECRET=${JWT_SECRET}
       - PORT=5030
       - FRONTEND_URL=${FRONTEND_URL}
+      # Create/alter tables from src/models/schema.ts on every container start
+      - AUTO_MIGRATE=${AUTO_MIGRATE:-true}
+      - MIGRATE_STRICT=${MIGRATE_STRICT:-false}
     networks:
       - mothernest-net
 
