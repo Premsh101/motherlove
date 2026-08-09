@@ -7,8 +7,11 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
+    "start:migrate": "npm run db:sync && npm start",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
+    "db:sync": "drizzle-kit push --force --verbose",
+    "db:seed": "tsx src/seed.ts",
     "db:studio": "drizzle-kit studio"
   },
   "keywords": [],
